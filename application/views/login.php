@@ -1,9 +1,10 @@
+
 <div class="card">
   <div class="card-header">
     Login
   </div>
   <div class="card-body">
-    <form method="POST" action="<?=base_url('auth')?>">
+    <form method="POST" id="loginForm">
     <div class="form-group">
         <label for="exampleInputEmail1">Email </label>
         <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp">
@@ -14,9 +15,29 @@
         <input type="password" class="form-control" name="password" id="password">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
-    <?php if($this->session->flashdata('login_fail')){ ?>
-        <span class="text-danger"><?= $this->session->flashdata('login_fail')?></span>
-    <?php } ?>
     </form>
   </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+   
+ <script type='text/javascript'>
+      $(document).ready(function() {
+        $('#loginForm').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "<?php echo site_url('auth'); ?>",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function(response) {
+                    if (response.status) {       
+                      //alert(response.message);
+                      window.location.href = "<?php echo site_url('dashboard'); ?>";
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        });
+    });
+</script>

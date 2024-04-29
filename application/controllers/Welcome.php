@@ -18,6 +18,11 @@ class Welcome extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
+	public function __construct() {
+        parent::__construct();
+		$this->load->database();
+		$this->load->model('User_model');
+    }
 	public function index()
 	{
 		//$this->load->view('welcome_message');
@@ -42,21 +47,16 @@ class Welcome extends CI_Controller {
 					'email'=> $email,
 					'password' => $pass,
 				);
-				$this->load->database();
-				$this->load->model('User_model');
 				$status= $this->User_model->checkLogin($data);
-				//print_r($status);die();
-				if($status!=false){
+				if ($status) {
 					$session_data=array(
 						'username'=> $status['username'],
 						'email_user'=> $status['email'],
 					);
-					
 					$this->session->set_userdata('UserLoginSession',$session_data);
-					redirect(base_url('dashboard'));
-				}else{
-					$this->session->set_flashdata('login_fail','Email or Password not correct');
-					redirect(base_url('login'));
+					echo json_encode(array("status" => true, "message" =>"Đúng thông tin"));
+				} else {
+					echo json_encode(array("status" => false, "message" =>" Sai username or password"));
 				}
 			}
 		}
