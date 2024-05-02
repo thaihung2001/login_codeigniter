@@ -56,6 +56,9 @@ class Welcome extends CI_Controller {
 					$this->session->set_userdata('UserLoginSession',$session_data);
 					echo json_encode(array("status" => true, "message" =>"Đúng thông tin"));
 				} else {
+					// Write log
+					$ip_address = $this->input->ip_address();
+					$this->User_model->log_failed_login($email, $ip_address);
 					echo json_encode(array("status" => false, "message" =>" Sai username or password"));
 				}
 			}
@@ -79,8 +82,6 @@ class Welcome extends CI_Controller {
 					'status' =>'1'
 				);
 				//var_dump($data);die();
-				$this->load->database();
-				$this->load->model('User_model');
 				$this->User_model->insertUser($data);
 				$this->session->set_flashdata('success','Successfully User Register');
 				redirect(base_url('register'));
