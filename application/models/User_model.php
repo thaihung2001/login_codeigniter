@@ -1,6 +1,14 @@
 <?php
  date_default_timezone_set('Asia/Ho_Chi_Minh');
 class User_model  extends CI_Model{
+    function getFailedLogin(){
+        $query = $this->db->get('failed_log');
+        if($query->num_rows()>0){
+            return $query->result_array();
+        }else{
+            return false;
+        }
+    }
     function insertUser($data){
         $this->db->insert('users',$data);
     }

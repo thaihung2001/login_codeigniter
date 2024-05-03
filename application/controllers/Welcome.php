@@ -35,6 +35,10 @@ class Welcome extends CI_Controller {
 		$this->load->view('login');
 		$this->load->view('base/footer');
 	}
+	public function loadFailedLogin(){
+		$data['logs']=$this->User_model->getFailedLogin();
+		echo json_encode($data);
+	}
 	public function authentication(){
 		if($_SERVER['REQUEST_METHOD'] == 'POST'){
 			$this->form_validation->set_rules('email','Email','trim|required');
