@@ -24,20 +24,38 @@
       <td>Email</td>
       <td>IP_Address</td>
       <td>Time</td>
-      <td>Total_num</td>
+      <td>Total</td>
+      <td>User Name</td>
     </thead>
     <tbody>
+      <?php if(isset($logs)!=FALSE){
+        //var_dump($logs);die();
+          $i=1;
+          foreach ($logs as $log) {
+      ?>
+        <tr>
+          <td><?php echo $i;?></td>
+          <td><?php echo $log['email']; ?></td>
+          <td><?php echo $log['ip_address']; ?></td>
+          <td><?php echo date('d/m/Y H:i:s', strtotime($log['max_time'])); ?></td>
+          <td><?php echo $log['count'];?></td> 
+          <td><?php if(isset($log['username'])){echo $log['username'];}else{echo '';} ?></td>
+        </tr>
+      <?php 
+          $i++;
+          }
+        }
+      ?>
     </tbody>
   </table>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
 <script type='text/javascript'>
-  $(document).ready(function() {
-    // lấy data failed login
-    function loadFailedLogin() {
+   // lấy data failed login
+   /* function loadFailedLogin() {
       $.ajax({
-        url: "<?php echo site_url('loadFailedLogin'); ?>",
+        url: "<?php //echo site_url('loadFailedLogin'); ?>",
         type: "GET",
         dataType: "json",
         success: function(response) {
@@ -59,9 +77,10 @@
           console.log('Lỗi');
         }
       });
-    }
+    } */
+  $(document).ready(function() {
 
-    loadFailedLogin(); // Gọi lần 1 khi load trang
+    //loadFailedLogin(); // Gọi lần 1 khi load trang
 
     $('#loginForm').submit(function(e) {
       e.preventDefault();
@@ -75,7 +94,7 @@
             //alert(response.message);
             window.location.href = "<?php echo site_url('dashboard'); ?>";
           } else {
-            loadFailedLogin(); // gọi lần 2 khi login fail
+           // loadFailedLogin(); // gọi lần 2 khi login fail
             alert(response.message);
           }
         }

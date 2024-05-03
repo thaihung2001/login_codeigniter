@@ -54,8 +54,8 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 //$route['blog/(:any)']='Welcome/blog/$1';
-$route['register']['get']='Welcome';
-$route['login']['get']='Welcome/login_page';
+$route['register']['get']='Welcome/index';
+$route['login']='Welcome/login_page';
 $route['loadFailedLogin']['get']='Welcome/loadFailedLogin';
 
 $route['register']['post']='Welcome/registerNow';

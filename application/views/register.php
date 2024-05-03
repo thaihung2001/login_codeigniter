@@ -61,6 +61,12 @@
         <?php
             }
         ?>
+        <?php 
+            if($this->session->flashdata('isset')) {?>
+            <span class="text-danger"><?= $this->session->flashdata('isset')  ?></span>
+        <?php
+            }
+        ?>
         </form>
   </div>
 </div>

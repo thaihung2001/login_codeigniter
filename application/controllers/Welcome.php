@@ -31,14 +31,18 @@ class Welcome extends CI_Controller {
 		$this->load->view('base/footer');
 	}
 	public function login_page(){
+		if($this->session->userdata('UserLoginSession')){
+            redirect(base_url('dashboard'));
+        }
 		$this->load->view('base/header');
-		$this->load->view('login');
+		$data['logs']=$this->User_model->getFailedLogin();
+		$this->load->view('login',$data);
 		$this->load->view('base/footer');
 	}
-	public function loadFailedLogin(){
+	/* public function loadFailedLogin(){
 		$data['logs']=$this->User_model->getFailedLogin();
 		echo json_encode($data);
-	}
+	} */
 	public function authentication(){
 		if($_SERVER['REQUEST_METHOD'] == 'POST'){
 			$this->form_validation->set_rules('email','Email','trim|required');
@@ -77,6 +81,11 @@ class Welcome extends CI_Controller {
 			if($this->form_validation->run()==TRUE){
 				$username=$this->input->post('username');
 				$email= $this->input->post('email');
+				//check user
+				if($this->User_model->checkUser($email)){
+					$this->session->set_flashdata('isset','User isset!');
+					redirect(base_url('register'));
+				}
 				$pass=$this->input->post('password');
 				$pass=md5($pass);
 				$data= array(
@@ -85,7 +94,6 @@ class Welcome extends CI_Controller {
 					'password' => $pass,
 					'status' =>'1'
 				);
-				//var_dump($data);die();
 				$this->User_model->insertUser($data);
 				$this->session->set_flashdata('success','Successfully User Register');
 				redirect(base_url('register'));
