@@ -57,10 +57,13 @@ $route['translate_uri_dashes'] = FALSE;
 $route['register']['get']='Welcome/index';
 $route['login']='Welcome/login_page';
 $route['loadFailedLogin']['get']='Welcome/loadFailedLogin';
+$route['loadData']['get']='Welcome/loadData';
 
 $route['register']['post']='Welcome/registerNow';
 $route['auth']['post']='Welcome/authentication';
 
+
+$route['processPermission']['post']='DashboardController/processPermission';
 $route['dashboard']['get']='DashboardController/index';
 $route['logout']['get']='DashboardController/logout';
 $route['upload']['post']='DashboardController/upload';

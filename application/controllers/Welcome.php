@@ -22,6 +22,7 @@ class Welcome extends CI_Controller {
         parent::__construct();
 		$this->load->database();
 		$this->load->model('User_model');
+		$this->load->model('UserPermission_model');
     }
 	public function index()
 	{
@@ -60,6 +61,7 @@ class Welcome extends CI_Controller {
 					$session_data=array(
 						'username'=> $status['username'],
 						'email_user'=> $status['email'],
+						'author'=>$status['status']
 					);
 					$this->session->set_userdata('UserLoginSession',$session_data);
 					echo json_encode(array("status" => true, "message" =>"Đúng thông tin"));
@@ -100,5 +102,9 @@ class Welcome extends CI_Controller {
 			}
 		}
 	}
-	
+	public function loadData(){
+		$data['users']=$this->User_model->getUser();
+		$data['permissions']=$this->UserPermission_model->getPermission();
+		echo json_encode($data);
+	}
 }

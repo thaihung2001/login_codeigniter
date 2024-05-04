@@ -1,22 +1,73 @@
 <?php
 class DashboardController extends CI_Controller{
-
-    public function check(){
-        if(!$this->session->userdata('UserLoginSession')){
+    public function __construct() {
+        parent::__construct();
+        if(!$this->session->userdata('UserLoginSession')){ // is Login
             redirect(base_url('login'));
         }
+		$this->load->database();
+		$this->load->model('UserPermission_model');
     }
-    public function index(){
-            $this->check();  
+   
+    public function index(){  
             $this->load->view('base/header');
-            $this->load->view('dashboard');
+            $data['datas']=$this->UserPermission_model->getUserPermissions();
+            $this->load->view('dashboard',$data);
             $this->load->view('base/footer');
     }
     public function logout(){
-        $this->check();  
         $this->session->unset_userdata('UserLoginSession');
 		redirect(base_url('login'));
     }
+    //processPermission
+    function checkUserPermission($data){
+        return $this->UserPermission_model->checkIssetUserPermission($data);
+    } 
+    public function processPermission(){
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+			$this->form_validation->set_rules('user','userid','required');
+			$this->form_validation->set_rules('permission','permissionid','required');
+			$this->form_validation->set_rules('action','action','required');
+			if($this->form_validation->run()==TRUE){
+                $data=[];
+                $userID=$this->input->post('user');
+				$permissionID=$this->input->post('permission');
+                $action=$this->input->post('action');
+                $data['userID']=$userID;
+                $data['permissionID']=$permissionID;
+                // Grant 
+                if($action=="Grant"){
+                    //check isset
+                    if($this->checkUserPermission($data) == true){
+                        $data['message']="Error: User is Granted !!!";
+                    }else{
+                        if($this->UserPermission_model->insertUserPermission($data)==true){
+                            $data['message']=" Granted successfully! ";
+                        }else{
+                            $data['message']="Error: User permission granted failed!!!";
+                        }
+                    }
+                    echo json_encode($data['message']);
+
+                }else if($action=="Revoke"){ //Revoke
+                    if($this->checkUserPermission($data) == false){
+                        $data['message']="Error: User has not been granted this permission !!!";
+                    }else{
+                        if($this->UserPermission_model->revokeUserPermission($data)==true){
+                            $data['message']=" Revoked successfully! ";
+                        }else{
+                            $data['message']="Error: User permission granted failed!!!";
+                        }
+                    }
+                    echo json_encode($data['message']);
+                }
+
+                //echo json_encode($data);
+            }
+        }
+    }
+      
+    //
     public function upload(){
         $this->check();
 

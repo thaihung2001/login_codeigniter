@@ -43,7 +43,17 @@ class User_model  extends CI_Model{
             );
             $this->db->insert('failed_log', $data);
         }
-   
+    
+    public function getUser(){
+        $this->db->select('users.userID, users.username, users.email');
+        $this->db->from('users');
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            return $query->result_array();
+        } else {
+            return false;
+        }
+    }
     function uploadfile_database($data){
         $this->db->insert('images',$data);
     }
