@@ -53,21 +53,41 @@
             <tbody>
                 <?php
                 if (isset($datas) != FALSE) {
-                    // sort array datas
-                    usort($datas, function ($a, $b) {
-                        return $a['userID'] <=> $b['userID'];
-                    });
+                    $groupedData = [];
+                        //Gom nhóm các id_user trùng nhau
+                        foreach ($datas as $data) {
+                            $userId = $data["userID"];
+                            if (!isset($groupedData[$userId])) {
+                                $groupedData[$userId] = [
+                                    "username" => $data["username"],
+                                    "email" => $data["email"],
+                                    "view" => false,
+                                    "edit" => false,
+                                    "delete" => false
+                                ];
+                            }
+                            // update data in $groupedData = []
+                            switch ($data["PermissionName"]) {
+                                case "View":
+                                    $groupedData[$userId]["view"] = true;
+                                    break;
+                                case "Edit":
+                                    $groupedData[$userId]["edit"] = true;
+                                    break;
+                                case "Delete":
+                                    $groupedData[$userId]["delete"] = true;
+                                    break;
+                            }
+                        }
 
-                    //var_dump($datas);
+                    //var_dump($groupedData);
                     $i = 1;
-                    foreach ($datas as $data) {
-                        $id_user = $data["userID"];
-                        $id_per = $data["permissionID"];
+                    foreach ($groupedData as $userId => $data) {
                         $username = $data["username"];
                         $email = $data["email"];
-                        $view = $data["PermissionName"] === "View" ? "checked" : "disabled";
-                        $edit = $data["PermissionName"] === "Edit" ? "checked" : "disabled";
-                        $delete = $data["PermissionName"] === "Delete" ? "checked" : "disabled";
+                        $view = $data["view"] ? "checked" : "disabled";
+                        $edit = $data["edit"] ? "checked" : "disabled";
+                        $delete = $data["delete"] ? "checked" : "disabled";
                 ?>
                         <tr>
                             <td><?= $i ?></td>
